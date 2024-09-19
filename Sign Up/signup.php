@@ -16,7 +16,21 @@ class database{
         }
         return $this->conn;
     }
+}
 
-    
+class user{
+    private $conn;
+    private $table_name = "users";
+
+    public $fullname;
+    public $username;
+    public $email;
+    public $password;
+    public $genderId;
+    public $roleId;
+
+    public function __construct($db){
+        $this->conn = $db;
+    }
 
 }
