@@ -32,5 +32,8 @@ class user{
     public function __construct($db){
         $this->conn = $db;
     }
+    public function createUser(){
+        $query = "INSERT INTO" . $this->table_name . " (fullname, username, email, password, genderId, roleId) VALUES (:fullname, :username, :email, :password, :genderId, :roleId)";
+    }
 
 }
