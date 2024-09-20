@@ -1,4 +1,7 @@
 <?php
+
+use Database as GlobalDatabase;
+
 class database {
     private $host = "localhost";
     private $db_name = "iap_d";
@@ -34,3 +37,8 @@ class User{
         return $stmt;
     }
 }
+
+$database = new database();
+$db = $database->getConnection();
+$user = new User($db);
+$users = $user->getUsers();
