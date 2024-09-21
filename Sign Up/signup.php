@@ -56,3 +56,16 @@ class user{
     }
 
 }
+
+if ($_POST){
+    $database = new Database();
+    $db = $database->getConnection();
+
+    $user = new User($db);
+    $user->fullname = $_POST['fullname'];
+    $user->username = $_POST['username'];
+    $user->email = $_POST['email'];
+    $user->password = $_POST['password'];
+    $user->genderId = $_POST['genderId'];
+    $user->roleId = $_POST['roleId'];
+}
