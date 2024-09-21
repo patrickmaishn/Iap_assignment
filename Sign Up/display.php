@@ -42,3 +42,5 @@ $database = new database();
 $db = $database->getConnection();
 $user = new User($db);
 $users = $user->getUsers();
+?>
+
