@@ -1,6 +1,6 @@
 <?php
-class database{
-    private $host = "localhost";
+class Database {
+    private $host =  "localhost";
     private $db_name = "iap_d";
     private $username = "root";
     private $password = "Patrickmaina05$";
@@ -11,14 +11,14 @@ class database{
         try{
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        } catch(PDOException $exception){
+        }catch(PDOException $exception){
             echo "connection error: " . $exception->getMessage();
         }
         return $this->conn;
     }
 }
 
-class user{
+class User{
     private $conn;
     private $table_name = "users";
 
@@ -32,15 +32,18 @@ class user{
     public function __construct($db){
         $this->conn = $db;
     }
+
     public function createUser(){
-        $query = "INSERT INTO" . $this->table_name . " (fullname, username, email, password, genderId, roleId) VALUES (:fullname, :username, :email, :password, :genderId, :roleId)";
+        $query = "INSERT INTO " . $this->table_name . " (fullname, username, email, password, genderId, roleId) VALUES (:fullname, :username, :email, :password, :genderId, :roleId)";
         $stmt = $this->conn->prepare($query);
+
         $this->fullname = htmlspecialchars(strip_tags($this->fullname));
         $this->username = htmlspecialchars(strip_tags($this->username));
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->password = password_hash($this->password, PASSWORD_BCRYPT); // Hash password for security
         $this->genderId = htmlspecialchars(strip_tags($this->genderId));
         $this->roleId = htmlspecialchars(strip_tags($this->roleId));
+
 
         $stmt->bindParam(":fullname", $this->fullname);
         $stmt->bindParam(":username", $this->username);
@@ -57,7 +60,7 @@ class user{
 
 }
 
-if ($_POST){
+if($_POST) {
     $database = new Database();
     $db = $database->getConnection();
 
@@ -68,4 +71,6 @@ if ($_POST){
     $user->password = $_POST['password'];
     $user->genderId = $_POST['genderId'];
     $user->roleId = $_POST['roleId'];
+
 }
+?>
