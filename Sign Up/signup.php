@@ -82,8 +82,12 @@ class User{
 
 
     public function createUser(){
-        $query = "INSERT INTO " . $this->table_name . " (fullname, username, email, password, genderId, roleId) VALUES (:fullname, :username, :email, :password, :genderId, :roleId)";
-        $stmt = $this->conn->prepare($query);
+
+       $validationError = $this->validateInput();
+       if($validationError){
+        return $validationError;
+       }
+        
 
         $this->fullname = htmlspecialchars(strip_tags($this->fullname));
         $this->username = htmlspecialchars(strip_tags($this->username));
@@ -92,6 +96,9 @@ class User{
         $this->genderId = htmlspecialchars(strip_tags($this->genderId));
         $this->roleId = htmlspecialchars(strip_tags($this->roleId));
 
+
+        $query = "INSERT INTO " . $this->table_name . " (fullname, username, email, password, genderId, roleId) VALUES (:fullname, :username, :email, :password, :genderId, :roleId)";
+        $stmt = $this->conn->prepare($query);
 
         $stmt->bindParam(":fullname", $this->fullname);
         $stmt->bindParam(":username", $this->username);
@@ -120,6 +127,8 @@ if($_POST) {
     $user->genderId = $_POST['genderId'];
     $user->roleId = $_POST['roleId'];
 
+    $result = $user->createUser();
+    echo "<div class='alert alert-info'>$result</div>";
 }
 ?>
 <!DOCTYPE html>
