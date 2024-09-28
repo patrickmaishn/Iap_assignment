@@ -61,7 +61,7 @@ class menus{
       <header class="pb-3 mb-4 border-bottom">
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="Ninth navbar example">
             <div class="container-xl">
-              <a class="navbar-brand" href="./">ICS Demo</a>
+              <a class="navbar-brand" href="./">ICS </a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarsExample07XL" aria-controls="navbarsExample07XL" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -81,7 +81,7 @@ class menus{
                     <a class="nav-link" href="#">Contact Us</a>
                   </li>
                   <li class="nav-item">
-                    <a class="nav-link" href="signup.php">Sign Up</a>
+                    <a class="nav-link" href="/class/Iap_assignment/Sign Up/signup.php">Sign Up</a>
                   </li>
                 </ul>
                 <form role="search">
@@ -97,7 +97,7 @@ class menus{
     public function main_right_menu(){
         ?>
         <div class="topnav-right">
-            <a href="../Sign Up/signup.php">Sign Up</a>
+            <a href="">Sign Up</a>
             <a href="">Sign In</a>
         </div>
         <?php
