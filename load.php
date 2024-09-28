@@ -19,18 +19,16 @@ function classAutoLoad($classname){
 
 spl_autoload_register('classAutoLoad');
 
-    $ObjGlob = new flc();
+    
 
 // Create instances of all classes
     $ObjLayouts = new layouts();
     $ObjMenus = new menus();
     $ObjHeadings = new headings();
     $ObjCont = new contents();
-    $ObjForm = new user_forms();
     $conn = new dbConnection(DBTYPE, HOSTNAME, DBPORT, HOSTUSER, HOSTPASS, DBNAME);
 
 
 // Create process instances
 
-    $ObjAuth = new auth();
-    $ObjAuth->signup($conn, $ObjGlob);
+   
