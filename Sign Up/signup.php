@@ -33,6 +33,20 @@ class User{
         $this->conn = $db;
     }
 
+    public function validateInput(){
+        if(!preg_match("/^[a-zA-Z\s'-]+$/", $this->fullname)){
+            return "Your name can only contain letters, spaces, dashes, and question marks";
+        }
+
+        if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)){
+            return "Invalid email format";
+        }
+
+        $allowed_domains = ['strathmore.edu', 'gmail.com', 'yahoo.com', 'mada.co.ke'];
+        $email_domain = substr(strrchr($this->email, "@"), 1);
+    }
+
+
     public function createUser(){
         $query = "INSERT INTO " . $this->table_name . " (fullname, username, email, password, genderId, roleId) VALUES (:fullname, :username, :email, :password, :genderId, :roleId)";
         $stmt = $this->conn->prepare($query);
@@ -40,7 +54,7 @@ class User{
         $this->fullname = htmlspecialchars(strip_tags($this->fullname));
         $this->username = htmlspecialchars(strip_tags($this->username));
         $this->email = htmlspecialchars(strip_tags($this->email));
-        $this->password = password_hash($this->password, PASSWORD_BCRYPT); // Hash password for security
+        $this->password = password_hash($this->password, PASSWORD_BCRYPT); 
         $this->genderId = htmlspecialchars(strip_tags($this->genderId));
         $this->roleId = htmlspecialchars(strip_tags($this->roleId));
 
