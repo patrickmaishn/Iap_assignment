@@ -43,7 +43,41 @@ class User{
         }
 
         $allowed_domains = ['strathmore.edu', 'gmail.com', 'yahoo.com', 'mada.co.ke'];
+        $disallowed_domains = ['yanky.net'];
         $email_domain = substr(strrchr($this->email, "@"), 1);
+
+        if(in_array($email_domain, $disallowed_domains)){
+            return "Email domain '$email_domain' is not allowed";
+        }
+
+        if(in_array($email_domain, $allowed_domains)){
+            return "Email domain '$email_domain' is not authorized";
+        }
+
+        if($this->emailExists()){
+            return "Email already exists";
+        }
+         if($this->usernameExists()){
+            return "Username already exists";
+         }
+
+         return null;
+    }
+
+    private function emailExists(){
+        $query = "SELECT id FROM " . $this->table_name . "WHERE email = :email";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":email", $this->email);
+        $stmt->rowCount() > 0;
+    }
+
+    private function usernameExists(){
+        $query = "SELECT id FROM " . $this->table_name . " Where username = :username";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":username", $this->username);
+        $stmt->execute();
+
+        return $stmt->rowCoutn() > 0;
     }
 
 
