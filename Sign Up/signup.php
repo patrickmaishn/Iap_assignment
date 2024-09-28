@@ -1,4 +1,5 @@
 <?php
+$message = '';
 class Database {
     private $host =  "localhost";
     private $db_name = "iap_d";
@@ -41,17 +42,21 @@ class User{
         if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)){
             return "Invalid email format";
         }
-
+        
         $allowed_domains = ['strathmore.edu', 'gmail.com', 'yahoo.com', 'mada.co.ke'];
-        $disallowed_domains = ['yanky.net'];
         $email_domain = substr(strrchr($this->email, "@"), 1);
 
-        if(in_array($email_domain, $disallowed_domains)){
+        if(!in_array($email_domain, $allowed_domains)){
             return "Email domain '$email_domain' is not allowed";
         }
 
-        if(in_array($email_domain, $allowed_domains)){
+        if(!in_array($email_domain, $allowed_domains)){
             return "Email domain '$email_domain' is not authorized";
+        }
+
+        $disallowed_usernames = ['admin', 'root', 'superuser'];
+        if(in_array(strtolower($this->username), $disallowed_usernames)){
+            return "this username'" . $this->username . "' is not allowed";
         }
 
         if($this->emailExists()){
@@ -65,19 +70,19 @@ class User{
     }
 
     private function emailExists(){
-        $query = "SELECT id FROM " . $this->table_name . "WHERE email = :email";
+        $query = "SELECT email FROM " . $this->table_name . "WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $this->email);
         $stmt->rowCount() > 0;
     }
 
     private function usernameExists(){
-        $query = "SELECT id FROM " . $this->table_name . " Where username = :username";
+        $query = "SELECT username FROM " . $this->table_name . " Where username = :username";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":username", $this->username);
         $stmt->execute();
 
-        return $stmt->rowCoutn() > 0;
+        return $stmt->rowCount() > 0;
     }
 
 
@@ -107,10 +112,10 @@ class User{
         $stmt->bindParam(":genderId", $this->genderId);
         $stmt->bindParam(":roleId", $this->roleId);
 
-        if($stmt->execute()){
-            return true;
+        if($stmt->execute()) {
+            return "User created successfully";  
         }
-        return false;
+        return "Failed to create user. Please try again.";
     }
 
 }
@@ -231,10 +236,11 @@ if($_POST) {
             </form>
             <div class="mt-3">
                 <?php
-                if (isset($user) && $user->createUser()) {
-                    echo '<div class="alert alert-success">User was created successfully!</div>';
-                } 
-                ?>
+                  if ($message) { ?>
+                    <div class="alert <?php echo strpos($message, 'successfully') !== false ? 'alert-success' : 'alert-danger'; ?>">
+                        <?php echo htmlspecialchars($message); ?>
+                    </div>
+                <?php } ?>
             </div>
         </div>
     </div>
