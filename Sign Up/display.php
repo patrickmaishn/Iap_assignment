@@ -89,6 +89,37 @@ $users = $user->getUsers();
 
 </head>
 <body>
-    
+<div class="container mt-5">
+        <h2 class="text-center">Users List</h2>
+        <div class="table-container mx-auto col-md-10">
+            <table class="table table-dark table-hover">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Role ID</th>
+                        <th>Created</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php while ($row = $users->fetch(PDO::FETCH_ASSOC)): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['userId']); ?></td>
+                        <td><?php echo htmlspecialchars($row['fullname']); ?></td>
+                        <td><?php echo htmlspecialchars($row['username']); ?></td>
+                        <td><?php echo htmlspecialchars($row['email']); ?></td>
+                        <td><?php echo htmlspecialchars($row['genderId']); ?></td>
+                        <td><?php echo htmlspecialchars($row['roleId']); ?></td>
+                        <td><?php echo htmlspecialchars($row['created']); ?></td>
+                    </tr>
+                <?php endwhile;?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </body>
 </html>
