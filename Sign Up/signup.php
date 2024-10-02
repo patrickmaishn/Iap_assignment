@@ -1,4 +1,6 @@
 <?php
+require '../tfa/ValidationHelper.php';  
+require '../tfa/OTPHelper.php';
 $message = '';
 class Database {
     private $host =  "localhost";
@@ -29,6 +31,7 @@ class User{
     public $password;
     public $genderId;
     public $roleId;
+    private $otp;
 
     public function __construct($db){
         $this->conn = $db;
@@ -86,38 +89,41 @@ class User{
     }
 
 
-    public function createUser(){
-
-       $validationError = $this->validateInput();
-       if($validationError){
-        return $validationError;
-       }
-        
-
+    public function createUser($repeatPassword){
+        $validationError = ValidationHelper::validate($this->fullname, $this->username, $this->email, $this->password, $repeatPassword, $this->conn);
+        if ($validationError) {
+            return $validationError;
+        }
+    
         $this->fullname = htmlspecialchars(strip_tags($this->fullname));
         $this->username = htmlspecialchars(strip_tags($this->username));
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->password = password_hash($this->password, PASSWORD_BCRYPT); 
         $this->genderId = htmlspecialchars(strip_tags($this->genderId));
         $this->roleId = htmlspecialchars(strip_tags($this->roleId));
-
-
-        $query = "INSERT INTO " . $this->table_name . " (fullname, username, email, password, genderId, roleId) VALUES (:fullname, :username, :email, :password, :genderId, :roleId)";
+        $this->otp = OTPHelper::generateOTP(); // Generate OTP
+    
+        $query = "INSERT INTO " . $this->table_name . " (fullname, username, email, password, genderId, roleId, otp) 
+                  VALUES (:fullname, :username, :email, :password, :genderId, :roleId, :otp)";
+        
         $stmt = $this->conn->prepare($query);
-
+    
         $stmt->bindParam(":fullname", $this->fullname);
         $stmt->bindParam(":username", $this->username);
         $stmt->bindParam(":email", $this->email);
         $stmt->bindParam(":password", $this->password);
         $stmt->bindParam(":genderId", $this->genderId);
         $stmt->bindParam(":roleId", $this->roleId);
-
+        $stmt->bindParam(":otp", $this->otp);  // Ensure OTP is bound
+    
         if($stmt->execute()) {
-            return "User created successfully";  
+            OTPHelper::sendOTP($this->email, $this->otp);
+            return "User created successfully";
         }
         return "Failed to create user. Please try again.";
     }
-
+    
+    
 }
 
 if($_POST) {
@@ -132,7 +138,9 @@ if($_POST) {
     $user->genderId = $_POST['genderId'];
     $user->roleId = $_POST['roleId'];
 
-    $result = $user->createUser();
+    $repeatPassword = $_POST['repeat_password'];
+
+    $result = $user->createUser($repeatPassword);
     echo "<div class='alert alert-info'>$result</div>";
 }
 ?>
@@ -198,8 +206,8 @@ if($_POST) {
 
 </head>
 <body>
-    <div class="container" mt-5>
-    <h2 class="text-center mb-4">Sign Up</h2>
+<div class="container mt-5">
+        <h2 class="text-center mb-4">Sign Up</h2>
         <div class="form-container mx-auto col-md-6">
             <form method="POST" action="signup.php">
                 <div class="form-group">
@@ -219,10 +227,15 @@ if($_POST) {
                     <input type="password" name="password" class="form-control" placeholder="Enter your password" required>
                 </div>
                 <div class="form-group">
+                    <label for="repeat_password">Repeat Password</label>
+                    <input type="password" name="repeat_password" class="form-control" placeholder="Repeat your password" required>
+                </div>
+                <div class="form-group">
                     <label for="genderId">Gender</label>
                     <select name="genderId" class="form-control" required>
                         <option value="1">Male</option>
                         <option value="2">Female</option>
+                        <option value="3">Other</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -234,18 +247,7 @@ if($_POST) {
                 </div>
                 <button type="submit" class="btn btn-custom btn-block">Sign Up</button>
             </form>
-            <div class="mt-3">
-                <?php
-                  if ($message) { ?>
-                    <div class="alert <?php echo strpos($message, 'successfully') !== false ? 'alert-success' : 'alert-danger'; ?>">
-                        <?php echo htmlspecialchars($message); ?>
-                    </div>
-                <?php } ?>
-            </div>
         </div>
     </div>
-
-    </div>
-    
 </body>
 </html>
