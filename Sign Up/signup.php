@@ -1,6 +1,6 @@
 <?php
-require '../tfa/ValidationHelper.php';  
-require '../tfa/OTPHelper.php';
+require '../tfa/Validate.php';  
+require '../tfa/otp.php';
 $message = '';
 class Database {
     private $host =  "localhost";
