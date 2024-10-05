@@ -101,7 +101,7 @@ class User{
         $this->password = password_hash($this->password, PASSWORD_BCRYPT); 
         $this->genderId = htmlspecialchars(strip_tags($this->genderId));
         $this->roleId = htmlspecialchars(strip_tags($this->roleId));
-        $this->otp = OTPHelper::generateOTP(); // Generate OTP
+        $this->otp = OTPHelper::generateOTP(); 
     
         $query = "INSERT INTO " . $this->table_name . " (fullname, username, email, password, genderId, roleId, otp) 
                   VALUES (:fullname, :username, :email, :password, :genderId, :roleId, :otp)";
@@ -114,7 +114,7 @@ class User{
         $stmt->bindParam(":password", $this->password);
         $stmt->bindParam(":genderId", $this->genderId);
         $stmt->bindParam(":roleId", $this->roleId);
-        $stmt->bindParam(":otp", $this->otp);  // Ensure OTP is bound
+        $stmt->bindParam(":otp", $this->otp);  
     
         if($stmt->execute()) {
             OTPHelper::sendOTP($this->email, $this->otp);
