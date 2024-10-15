@@ -22,7 +22,7 @@ class OTPHelper {
             $mail->Port = 587;
 
             
-            $mail->setFrom('patricknmaina0@gmail.com', 'Strath_Eats');
+            $mail->setFrom('patricknmaina0@gmail.com', 'IAP');
             $mail->addAddress($email);
 
            
