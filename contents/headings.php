@@ -4,9 +4,9 @@ class headings{
         ?>
       <div class="p-5 mb-4 bg-body-tertiary rounded-3">
         <div class="container-fluid py-2">
-          <h1 class="display-5 fw-bold">Assignment II</h1>
-          <p class="col-md-12 fs-6">This is an individual assignment. We assume that you already know how to set up a localhost server(s): & MySQL database and Apache web servers.<br>If not, your instructor will assist you to set it up.</p>
-          <button class="btn btn-primary btn-lg" type="button">Example button</button>
+        <h1 class="display-5 fw-bold" style="color: blue;">London Blues</h1>
+          <p class="col-md-12 fs-6">Over the years, the "London Blues" have cemented their place as one of the city’s crown jewels in sport, winning multiple domestic titles, including six Premier League trophies, and excelling in Europe with two UEFA Champions League triumphs. Their success has been built on a blend of world-class talent, both from abroad and homegrown, making them a global football brand while still firmly rooted in their London heritage</p>
+          
         </div>
       </div>
         <?php
