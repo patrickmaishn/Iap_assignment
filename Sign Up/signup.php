@@ -38,9 +38,10 @@ class User{
     }
 
     public function validateInput(){
-        if(!preg_match("/^[a-zA-Z\s'-]+$/", $this->fullname)){
+        if (!preg_match("/^[\p{L}\s'-]+$/u", $this->fullname)) {
             return "Your name can only contain letters, spaces, dashes, and question marks";
         }
+        
 
         if(!filter_var($this->email, FILTER_VALIDATE_EMAIL)){
             return "Invalid email format";
@@ -116,9 +117,10 @@ class User{
         $stmt->bindParam(":roleId", $this->roleId);
         $stmt->bindParam(":otp", $this->otp);  
     
-        if($stmt->execute()) {
+        if ($stmt->execute()) {
             OTPHelper::sendOTP($this->email, $this->otp);
-            return "User created successfully";
+            header("Location: verify.php?email=" . urlencode($this->email));
+            exit();
         }
         return "Failed to create user. Please try again.";
     }
@@ -126,23 +128,24 @@ class User{
     
 }
 
-if($_POST) {
+if ($_POST) {
     $database = new Database();
     $db = $database->getConnection();
 
     $user = new User($db);
-    $user->fullname = $_POST['fullname'];
-    $user->username = $_POST['username'];
-    $user->email = $_POST['email'];
-    $user->password = $_POST['password'];
-    $user->genderId = $_POST['genderId'];
-    $user->roleId = $_POST['roleId'];
+    $user->fullname = $_POST['fullname'] ?? '';  
+    $user->username = $_POST['username'] ?? '';
+    $user->email = $_POST['email'] ?? '';
+    $user->password = $_POST['password'] ?? '';
+    $user->genderId = $_POST['genderId'] ?? '';
+    $user->roleId = $_POST['roleId'] ?? '';
 
-    $repeatPassword = $_POST['repeat_password'];
+    $repeatPassword = $_POST['repeat_password'] ?? '';
 
     $result = $user->createUser($repeatPassword);
     echo "<div class='alert alert-info'>$result</div>";
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
