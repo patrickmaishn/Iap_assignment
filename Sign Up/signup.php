@@ -91,7 +91,7 @@ class User{
 
 
     public function createUser($repeatPassword){
-        $validationError = ValidationHelper::validate($this->fullname, $this->username, $this->email, $this->password, $repeatPassword, $this->conn);
+        $validationError = Validate::validate($this->fullname, $this->username, $this->email, $this->password, $repeatPassword, $this->conn);
         if ($validationError) {
             return $validationError;
         }

@@ -1,5 +1,21 @@
 <?php
-class ValidationHelper {
+class Validate {
+    private $conn;
+
+    public function __construct($conn) {
+        $this->conn = $conn;
+    }
+
+    public static function createConnection() {
+        try {
+            $conn = new PDO("mysql:host=127.0.0.1;port=3307;dbname=iap_d", "root", "");
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $conn;
+        } catch (PDOException $e) {
+            die("Database connection failed: " . $e->getMessage());
+        }
+    }
+
     public static function validate($fullname, $username, $email, $password, $repeatPassword, $conn) {
         if (!preg_match("/^[a-zA-Z\s'-]+$/", $fullname)) {
             return "Your name can only contain letters, spaces, dashes, and question marks";
@@ -21,10 +37,11 @@ class ValidationHelper {
             return "The username '" . $username . "' is not allowed";
         }
 
-        if (self::emailExists($email, $conn)) {
+        if ($conn->emailExists($email)) {
             return "Email already exists";
         }
-        if (self::usernameExists($username, $conn)) {
+
+        if ($conn->usernameExists($username)) {
             return "Username already exists";
         }
 
@@ -39,22 +56,33 @@ class ValidationHelper {
         return null;
     }
 
-    private static function emailExists($email, $conn) {
+    private function emailExists($email) {
         $query = "SELECT email FROM users WHERE email = :email";
-        $stmt = $conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":email", $email);
         $stmt->execute();
 
         return $stmt->rowCount() > 0;
     }
 
-    private static function usernameExists($username, $conn) {
+    private function usernameExists($username) {
         $query = "SELECT username FROM users WHERE username = :username";
-        $stmt = $conn->prepare($query);
+        $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":username", $username);
         $stmt->execute();
 
         return $stmt->rowCount() > 0;
     }
 }
+
+// Usage example in signup.php
+/*$conn = Validate::createConnection();
+$validator = new Validate($conn);
+
+$validation_result = Validate::validate($fullname, $username, $email, $password, $repeatPassword, $conn);
+if ($validation_result !== null) {
+    echo $validation_result;
+} else {
+    // Proceed with user registration
+}*/
 ?>
