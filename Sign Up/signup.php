@@ -3,10 +3,10 @@ require '../tfa/Validate.php';
 require '../tfa/otp.php';
 $message = '';
 class Database {
-    private $host =  "localhost";
+    private $host =  "localhost:3307";
     private $db_name = "iap_d";
     private $username = "root";
-    private $password = "Patrickmaina05$";
+    private $password = "";
     public $conn;
 
     public function getConnection(){
@@ -15,6 +15,7 @@ class Database {
             $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }catch(PDOException $exception){
+            die('me 2');
             echo "connection error: " . $exception->getMessage();
         }
         return $this->conn;
@@ -24,6 +25,7 @@ class Database {
 class User{
     private $conn;
     private $table_name = "users";
+    
 
     public $fullname;
     public $username;
@@ -90,7 +92,7 @@ class User{
     }
 
 
-    public function createUser($repeatPassword){
+    public function createUser($repeatPassword,){
         $validationError = Validate::validate($this->fullname, $this->username, $this->email, $this->password, $repeatPassword, $this->conn);
         if ($validationError) {
             return $validationError;

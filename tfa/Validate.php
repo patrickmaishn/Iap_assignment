@@ -1,22 +1,14 @@
 <?php
 class Validate {
     private $conn;
-
     public function __construct($conn) {
         $this->conn = $conn;
     }
 
-    public static function createConnection() {
-        try {
-            $conn = new PDO("mysql:host=127.0.0.1;port=3307;dbname=iap_d", "root", "");
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $conn;
-        } catch (PDOException $e) {
-            die("Database connection failed: " . $e->getMessage());
-        }
-    }
-
     public static function validate($fullname, $username, $email, $password, $repeatPassword, $conn) {
+        // Create an instance of Validate to use non-static methods
+        $validator = new self($conn);
+        
         if (!preg_match("/^[a-zA-Z\s'-]+$/", $fullname)) {
             return "Your name can only contain letters, spaces, dashes, and question marks";
         }
@@ -37,11 +29,11 @@ class Validate {
             return "The username '" . $username . "' is not allowed";
         }
 
-        if ($conn->emailExists($email)) {
+        if ($validator->emailExists($email)) {
             return "Email already exists";
         }
 
-        if ($conn->usernameExists($username)) {
+        if ($validator->usernameExists($username)) {
             return "Username already exists";
         }
 
@@ -74,9 +66,9 @@ class Validate {
         return $stmt->rowCount() > 0;
     }
 }
-
+/*
 // Usage example in signup.php
-/*$conn = Validate::createConnection();
+$conn = Validate::createConnection();
 $validator = new Validate($conn);
 
 $validation_result = Validate::validate($fullname, $username, $email, $password, $repeatPassword, $conn);

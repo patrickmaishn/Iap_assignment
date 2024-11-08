@@ -30,7 +30,11 @@
                         // set the PDO error mode to exception
                         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                         // echo "Connected successfully :-)";
-                      } catch(PDOException $e) { return "Connection failed: " . $e->getMessage(); }
+                        die('me');
+                      } catch(PDOException $e) {
+                        // return "Connection failed: " . $e->getMessage();
+                        die('me');
+                        }
                       break;
                 case 'MySQLi' :
                     if($db_port<>Null){
