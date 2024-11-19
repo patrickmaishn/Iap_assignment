@@ -1,4 +1,5 @@
 <?php
+ob_start();
 require 'signup.php';
 
 if($_POST) {
@@ -21,12 +22,14 @@ if($_POST) {
         $updateStmt->bindParam(":email", $email);
         $updateStmt->execute();
 
-        echo "<div class= 'alert alert-accesss'> Registration varified Successfully! </div>";
+        header("Location: login.php");
+        exit();
     }else{
         echo "<div class= 'alert alert-accesss'>Invalid OTP. Try again. </div>";
     }
 
 }
+ob_end_flush();
 ?>
 
 <!DOCTYPE html>

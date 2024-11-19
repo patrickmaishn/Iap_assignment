@@ -31,7 +31,7 @@
                         $this->connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                       } catch(PDOException $e) {
                        
-                        die('me');
+                        //die('me');
                         }
                       break;
                 case 'MySQLi' :
@@ -75,4 +75,8 @@
             }
         }
 
+
+        public function getConnection() {
+            return $this->connection;
+        }
     }
